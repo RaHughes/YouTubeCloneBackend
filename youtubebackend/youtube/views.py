@@ -35,14 +35,27 @@ class VideoCommentList(APIView):
     def get(self, request, pk):
         comment = self.get_object(pk)
         serializer = VideoCommentSerializer(comment)
-        return Response(serializer.data)
+        return Response(serializer.data) 
 
-    def post(self, request):
-        serializer = VideoCommentSerializer(data=request.data)
+    def post(self, request, pk):
+        comment = self.get_object(pk)
+        serializer = VideoCommentSerializer(comment, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def patch(self, request, pk):
+        comment = self.get_object(pk)
+        serializer = VideoCommentSerializer(comment, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)    
+
+
+
 
 class VideoReplyList(APIView):
 
